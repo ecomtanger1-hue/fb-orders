@@ -158,7 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     {!isEffectiveCollapsed && <span className="truncate">{item.label}</span>}
                   </div>
                   {item.badge !== undefined && (
-                    <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white bg-rose-500 rounded-full animate-pulse">
+                    <span className="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold font-mono text-rose-700 bg-rose-50 border border-rose-200 rounded-md">
                       {item.badge}
                     </span>
                   )}

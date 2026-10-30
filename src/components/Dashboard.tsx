@@ -186,8 +186,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const renderDeltaBadge = (delta: MetricDelta, suffix: string = '%', isReversed: boolean = false) => {
     if (delta.isNeutral || delta.percentChange === null) {
       return (
-        <span className="inline-flex items-center text-[11px] font-medium text-slate-500">
-          <Minus className="w-3 h-3 mr-0.5" /> 0.0{suffix} vs prior
+        <span className="inline-flex items-center text-[10px] font-mono tabular-nums font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-md border border-slate-200">
+          <Minus className="w-3 h-3 mr-0.5" /> 0.0{suffix}
         </span>
       );
     }
@@ -195,10 +195,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
     const Icon = delta.isIncrease ? ArrowUpRight : ArrowDownRight;
     const absVal = Math.abs(delta.percentChange);
     return (
-      <span className={`inline-flex items-center text-[11px] font-semibold ${isGood ? 'text-emerald-700' : 'text-rose-700'}`}>
-        <Icon className="w-3.5 h-3.5 mr-0.5 shrink-0" />
+      <span className={`inline-flex items-center text-[10px] font-mono tabular-nums font-semibold px-1.5 py-0.5 rounded-md border ${
+        isGood 
+          ? 'text-emerald-700 bg-emerald-50 border-emerald-200/80' 
+          : 'text-rose-700 bg-rose-50 border-rose-200/80'
+      }`}>
+        <Icon className="w-3 h-3 mr-0.5 shrink-0" />
         {delta.isIncrease ? '+' : '-'}{absVal}{suffix}
-        <span className="text-slate-500 font-normal ml-1 hidden xs:inline">vs prior</span>
       </span>
     );
   };
@@ -299,7 +302,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         
         {/* Total Gross Revenue */}
-        <div className="bg-white rounded-xl border border-slate-200 p-3.5 sm:p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-3.5 sm:p-5 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -309,7 +312,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
-            <div className="mt-2 text-lg sm:text-2xl font-black text-slate-900 tracking-tight truncate">
+            <div className="mt-2 text-lg sm:text-2xl font-black font-mono tabular-nums text-slate-900 tracking-tight truncate">
               ${currentStats.revenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
           </div>
@@ -319,14 +322,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
             ) : (
               <span className="text-[11px] text-slate-500">Historical Lifetime</span>
             )}
-            <span className="text-[11px] text-slate-500 hidden sm:inline">
+            <span className="text-[11px] font-mono tabular-nums text-slate-500 hidden sm:inline">
               Prior: ${priorStats.revenue.toFixed(0)}
             </span>
           </div>
         </div>
 
         {/* Net Profit & Margin */}
-        <div className="bg-white rounded-xl border border-slate-200 p-3.5 sm:p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-3.5 sm:p-5 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -336,7 +339,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
-            <div className="mt-2 text-lg sm:text-2xl font-black text-emerald-700 tracking-tight truncate">
+            <div className="mt-2 text-lg sm:text-2xl font-black font-mono tabular-nums text-emerald-700 tracking-tight truncate">
               {canViewFinancials ? (
                 `$${currentStats.netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
               ) : (
@@ -348,12 +351,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
             {canViewFinancials ? (
               <>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                  <span className="text-[11px] font-bold font-mono tabular-nums text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md border border-emerald-200/60">
                     {currentStats.marginPercent}%
                   </span>
                   {timePreset !== 'all' && renderDeltaBadge(profitDelta)}
                 </div>
-                <span className="text-[11px] text-slate-500 hidden sm:inline">
+                <span className="text-[11px] font-mono tabular-nums text-slate-500 hidden sm:inline">
                   Prior: ${priorStats.netProfit.toFixed(0)}
                 </span>
               </>
@@ -364,7 +367,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         {/* Orders Count & AOV */}
-        <div className="bg-white rounded-xl border border-slate-200 p-3.5 sm:p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-3.5 sm:p-5 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -375,7 +378,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
             </div>
             <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
+              <span className="text-lg sm:text-2xl font-black font-mono tabular-nums text-slate-900 tracking-tight">
                 {currentStats.ordersCount}
               </span>
               <span className="text-xs text-slate-500 font-medium">
@@ -389,14 +392,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
             ) : (
               <span className="text-[11px] text-slate-500">All orders</span>
             )}
-            <span className="text-[11px] text-slate-600 font-semibold">
+            <span className="text-[11px] font-mono tabular-nums text-slate-600 font-semibold">
               AOV: ${currentStats.aov.toFixed(0)}
             </span>
           </div>
         </div>
 
         {/* Sell-Through & Inventory Velocity */}
-        <div className="bg-white rounded-xl border border-slate-200 p-3.5 sm:p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-3.5 sm:p-5 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -407,28 +410,28 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
             </div>
             <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
+              <span className="text-lg sm:text-2xl font-black font-mono tabular-nums text-slate-900 tracking-tight">
                 {sellThroughRate}%
               </span>
               <span className="text-xs text-slate-500">sold in period</span>
             </div>
           </div>
           <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-            <span>{activeStockUnits} units in stock</span>
-            <span className="font-semibold text-slate-700">${inventoryRetailValue.toFixed(0)} retail</span>
+            <span className="font-mono tabular-nums">{activeStockUnits} units in stock</span>
+            <span className="font-semibold font-mono tabular-nums text-slate-700">${inventoryRetailValue.toFixed(0)} retail</span>
           </div>
         </div>
 
       </div>
 
       {/* 3. Secondary Metrics Strip (Average Ticket, Profit Per Order, Shipping Profit, Cancellation Rate) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50/80 p-3 rounded-xl border border-slate-200 text-xs">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50/80 p-3 rounded-xl border border-slate-200/80 text-xs">
         <div className="flex flex-col">
           <span className="text-slate-500 font-medium">Avg Order Value (AOV)</span>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-sm font-bold text-slate-900">${currentStats.aov.toFixed(2)}</span>
+            <span className="text-sm font-bold font-mono tabular-nums text-slate-900">${currentStats.aov.toFixed(2)}</span>
             {timePreset !== 'all' && (
-              <span className={`text-[10px] font-semibold ${aovDelta.isIncrease ? 'text-emerald-700' : 'text-slate-500'}`}>
+              <span className={`text-[10px] font-mono tabular-nums font-semibold ${aovDelta.isIncrease ? 'text-emerald-700' : 'text-slate-500'}`}>
                 {aovDelta.isIncrease ? `+$${aovDelta.delta}` : `-$${Math.abs(aovDelta.delta)}`}
               </span>
             )}
@@ -438,11 +441,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="flex flex-col">
           <span className="text-slate-500 font-medium">Avg Profit per Order</span>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-sm font-bold text-emerald-700">
+            <span className="text-sm font-bold font-mono tabular-nums text-emerald-700">
               {canViewFinancials ? `$${currentStats.avgProfitPerOrder.toFixed(2)}` : '••••'}
             </span>
             {canViewFinancials && timePreset !== 'all' && (
-              <span className={`text-[10px] font-semibold ${avgProfitDelta.isIncrease ? 'text-emerald-700' : 'text-slate-500'}`}>
+              <span className={`text-[10px] font-mono tabular-nums font-semibold ${avgProfitDelta.isIncrease ? 'text-emerald-700' : 'text-slate-500'}`}>
                 {avgProfitDelta.isIncrease ? `+$${avgProfitDelta.delta}` : `-$${Math.abs(avgProfitDelta.delta)}`}
               </span>
             )}
@@ -452,7 +455,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="flex flex-col">
           <span className="text-slate-500 font-medium">Net Shipping Profit</span>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className={`text-sm font-bold ${currentStats.shippingProfit >= 0 ? 'text-slate-900' : 'text-rose-600'}`}>
+            <span className={`text-sm font-bold font-mono tabular-nums ${currentStats.shippingProfit >= 0 ? 'text-slate-900' : 'text-rose-600'}`}>
               {currentStats.shippingProfit >= 0 ? `+$${currentStats.shippingProfit.toFixed(2)}` : `-$${Math.abs(currentStats.shippingProfit).toFixed(2)}`}
             </span>
             <span className="text-[10px] text-slate-500 hidden sm:inline">
@@ -464,7 +467,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="flex flex-col">
           <span className="text-slate-500 font-medium">Cancellation Rate</span>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className={`text-sm font-bold ${currentStats.cancelledRate > 10 ? 'text-rose-600' : 'text-slate-900'}`}>
+            <span className={`text-sm font-bold font-mono tabular-nums ${currentStats.cancelledRate > 10 ? 'text-rose-600' : 'text-slate-900'}`}>
               {currentStats.cancelledRate}%
             </span>
             <span className="text-[10px] text-slate-500">

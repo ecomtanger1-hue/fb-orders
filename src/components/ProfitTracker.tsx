@@ -275,12 +275,12 @@ export const ProfitTracker: React.FC<ProfitTrackerProps> = ({
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            <span className="text-2xl sm:text-3xl font-black font-mono tabular-nums tracking-tight">
               ${stats.totalNetProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
           </div>
           <div className="mt-2 flex items-center gap-1.5 text-xs text-emerald-100 font-medium">
-            <span className="px-1.5 py-0.5 rounded bg-white/20 font-bold">
+            <span className="px-1.5 py-0.5 rounded-md bg-white/20 font-bold font-mono tabular-nums">
               {stats.marginPercent}%
             </span>
             <span>realized profit margin</span>
@@ -288,7 +288,7 @@ export const ProfitTracker: React.FC<ProfitTrackerProps> = ({
         </div>
 
         {/* Delivered Revenue */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-4 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase font-bold tracking-wider text-slate-500">
               Delivered Revenue
@@ -297,16 +297,16 @@ export const ProfitTracker: React.FC<ProfitTrackerProps> = ({
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-2 text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+          <div className="mt-2 text-xl sm:text-2xl font-black font-mono tabular-nums text-slate-900 tracking-tight">
             ${stats.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
           <div className="mt-1 text-xs text-slate-500">
-            Cost of items: <span className="font-semibold text-slate-700">${stats.totalCost.toFixed(2)}</span>
+            Cost of items: <span className="font-semibold font-mono tabular-nums text-slate-700">${stats.totalCost.toFixed(2)}</span>
           </div>
         </div>
 
         {/* Delivered Orders */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-4 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase font-bold tracking-wider text-slate-500">
               Delivered Orders
@@ -315,16 +315,16 @@ export const ProfitTracker: React.FC<ProfitTrackerProps> = ({
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-2 text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+          <div className="mt-2 text-xl sm:text-2xl font-black font-mono tabular-nums text-slate-900 tracking-tight">
             {stats.totalOrdersCount}
           </div>
           <div className="mt-1 text-xs text-slate-500">
-            Total units sold: <span className="font-semibold text-slate-700">{stats.totalUnits} items</span>
+            Total units sold: <span className="font-semibold font-mono tabular-nums text-slate-700">{stats.totalUnits} items</span>
           </div>
         </div>
 
         {/* Avg Profit per Order */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-4 sm:p-5 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase font-bold tracking-wider text-slate-500">
               Avg Profit / Order
@@ -333,7 +333,7 @@ export const ProfitTracker: React.FC<ProfitTrackerProps> = ({
               <Percent className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-2 text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+          <div className="mt-2 text-xl sm:text-2xl font-black font-mono tabular-nums text-slate-900 tracking-tight">
             ${stats.avgProfitPerOrder.toFixed(2)}
           </div>
           <div className="mt-1 text-xs text-slate-500">

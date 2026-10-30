@@ -486,14 +486,14 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
                   <div className="flex items-center gap-2.5 sm:gap-3 lg:gap-4 shrink-0">
                     {/* Cost */}
                     <div className="text-right w-16">
-                      <span className="text-xs sm:text-sm font-semibold text-slate-600">
+                      <span className="text-xs sm:text-sm font-semibold font-mono tabular-nums text-slate-600">
                         ${item.costPrice.toFixed(2)}
                       </span>
                     </div>
 
                     {/* Selling Price */}
                     <div className="text-right w-16">
-                      <span className="text-xs sm:text-sm font-black text-slate-900">
+                      <span className="text-xs sm:text-sm font-black font-mono tabular-nums text-slate-900">
                         ${item.sellingPrice.toFixed(2)}
                       </span>
                     </div>
@@ -501,12 +501,12 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
                     {/* Stock */}
                     <div className="text-center w-12">
                       <span
-                        className={`text-xs sm:text-sm font-black px-2 py-0.5 rounded-md inline-block leading-none ${
+                        className={`text-xs sm:text-sm font-black font-mono tabular-nums px-2 py-0.5 rounded-md inline-block leading-none border ${
                           isOut
-                            ? 'bg-rose-100 text-rose-800'
+                            ? 'bg-rose-50 text-rose-700 border-rose-200'
                             : isLow
-                            ? 'bg-amber-100 text-amber-800'
-                            : 'bg-emerald-50 text-emerald-800'
+                            ? 'bg-amber-50 text-amber-700 border-amber-200'
+                            : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                         }`}
                       >
                         {item.stock}

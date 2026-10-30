@@ -259,7 +259,7 @@ export const TeamManager: React.FC<TeamManagerProps> = ({
 
       {/* KPI Cards: Members, Confirmed Orders, Granted Rewards, Paid, Balance Due */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               Members
@@ -267,7 +267,7 @@ export const TeamManager: React.FC<TeamManagerProps> = ({
             <Users className="w-4 h-4 text-blue-600" />
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-xl sm:text-2xl font-black text-slate-900">
+            <span className="text-xl sm:text-2xl font-black font-mono tabular-nums text-slate-900">
               {globalStats.totalMembers}
             </span>
             <span className="text-xs text-emerald-600 font-bold">
@@ -276,7 +276,7 @@ export const TeamManager: React.FC<TeamManagerProps> = ({
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               Orders
@@ -284,14 +284,14 @@ export const TeamManager: React.FC<TeamManagerProps> = ({
             <ShoppingBag className="w-4 h-4 text-indigo-600" />
           </div>
           <div className="mt-2 flex items-baseline gap-1">
-            <span className="text-xl sm:text-2xl font-black text-slate-900">
+            <span className="text-xl sm:text-2xl font-black font-mono tabular-nums text-slate-900">
               {globalStats.totalConfirmedOrders}
             </span>
             <span className="text-xs text-slate-400 font-medium ml-1">confirmed</span>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">
               Earned
@@ -299,13 +299,13 @@ export const TeamManager: React.FC<TeamManagerProps> = ({
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
           </div>
           <div className="mt-2 flex items-baseline gap-1">
-            <span className="text-xl sm:text-2xl font-black text-emerald-700">
+            <span className="text-xl sm:text-2xl font-black font-mono tabular-nums text-emerald-700">
               ${globalStats.totalGrantedRewards.toFixed(2)}
             </span>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wider">
               Paid
@@ -313,13 +313,13 @@ export const TeamManager: React.FC<TeamManagerProps> = ({
             <DollarSign className="w-4 h-4 text-blue-600" />
           </div>
           <div className="mt-2 flex items-baseline gap-1">
-            <span className="text-xl sm:text-2xl font-black text-blue-700">
+            <span className="text-xl sm:text-2xl font-black font-mono tabular-nums text-blue-700">
               ${globalStats.totalPaid.toFixed(2)}
             </span>
           </div>
         </div>
 
-        <div className={`p-4 rounded-2xl border shadow-xs col-span-2 sm:col-span-1 ${globalStats.totalDue > 0 ? 'bg-amber-50/70 border-amber-300' : 'bg-white border-slate-200'}`}>
+        <div className={`p-4 rounded-xl border shadow-xs col-span-2 sm:col-span-1 ${globalStats.totalDue > 0 ? 'bg-amber-50/70 border-amber-300' : 'bg-white border-slate-200/80'}`}>
           <div className="flex items-center justify-between">
             <span className={`text-[11px] font-bold uppercase tracking-wider ${globalStats.totalDue > 0 ? 'text-amber-800' : 'text-slate-500'}`}>
               Due
@@ -327,7 +327,7 @@ export const TeamManager: React.FC<TeamManagerProps> = ({
             <Clock className={`w-4 h-4 ${globalStats.totalDue > 0 ? 'text-amber-600' : 'text-slate-400'}`} />
           </div>
           <div className="mt-2 flex items-baseline gap-1">
-            <span className={`text-xl sm:text-2xl font-black ${globalStats.totalDue > 0 ? 'text-amber-800' : 'text-slate-800'}`}>
+            <span className={`text-xl sm:text-2xl font-black font-mono tabular-nums ${globalStats.totalDue > 0 ? 'text-amber-800' : 'text-slate-800'}`}>
               ${globalStats.totalDue.toFixed(2)}
             </span>
           </div>
@@ -473,39 +473,39 @@ export const TeamManager: React.FC<TeamManagerProps> = ({
                   )}
 
                   {/* Financial Stats: Earned | Paid | Due */}
-                  <div className="mt-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200 grid grid-cols-4 gap-1.5 text-center text-xs">
+                  <div className="mt-3 p-2.5 bg-slate-50/80 rounded-xl border border-slate-200/80 grid grid-cols-4 gap-1.5 text-center text-xs">
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase block tracking-wider">
                         Orders
                       </span>
-                      <span className="font-black text-slate-900 text-sm">
+                      <span className="font-black font-mono tabular-nums text-slate-900 text-sm">
                         {mStats.orderCount}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase block tracking-wider">
                         Earned
                       </span>
-                      <span className="font-black text-emerald-700 text-sm">
+                      <span className="font-black font-mono tabular-nums text-emerald-700 text-sm">
                         ${mStats.granted.toFixed(2)}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase block tracking-wider">
                         Paid
                       </span>
-                      <span className="font-black text-blue-700 text-sm">
+                      <span className="font-black font-mono tabular-nums text-blue-700 text-sm">
                         ${mStats.paid.toFixed(2)}
                       </span>
                     </div>
 
                     <div>
-                      <span className={`text-[10px] font-bold uppercase block ${mStats.due > 0 ? 'text-amber-800' : 'text-slate-400'}`}>
+                      <span className={`text-[10px] font-bold uppercase block tracking-wider ${mStats.due > 0 ? 'text-amber-800' : 'text-slate-400'}`}>
                         Due
                       </span>
-                      <span className={`font-black text-sm ${mStats.due > 0 ? 'text-amber-800' : 'text-slate-700'}`}>
+                      <span className={`font-black font-mono tabular-nums text-sm ${mStats.due > 0 ? 'text-amber-800' : 'text-slate-700'}`}>
                         ${mStats.due.toFixed(2)}
                       </span>
                     </div>

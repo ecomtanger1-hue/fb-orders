@@ -272,26 +272,26 @@ export const MemberHistoryModal: React.FC<MemberHistoryModalProps> = ({
           
           {/* Financial Stats: Clean flat strip without bulky nested cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-            <div className="bg-slate-50 p-2.5 sm:p-3.5 rounded-xl border border-slate-200">
+            <div className="bg-slate-50/80 p-2.5 sm:p-3.5 rounded-xl border border-slate-200/80">
               <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
                 Orders Handled
               </span>
               <div className="flex items-baseline gap-1.5 mt-0.5">
-                <span className="text-lg sm:text-2xl font-black text-slate-900">
+                <span className="text-lg sm:text-2xl font-black font-mono tabular-nums text-slate-900">
                   {stats.totalOrders}
                 </span>
-                <span className="text-[11px] sm:text-xs text-emerald-600 font-bold">
+                <span className="text-[11px] sm:text-xs font-mono tabular-nums text-emerald-600 font-bold">
                   {stats.deliveredOrders} del.
                 </span>
               </div>
             </div>
 
-            <div className="bg-emerald-50/70 p-2.5 sm:p-3.5 rounded-xl border border-emerald-200">
+            <div className="bg-emerald-50/70 p-2.5 sm:p-3.5 rounded-xl border border-emerald-200/80">
               <span className="text-[10px] sm:text-[11px] font-bold text-emerald-700 uppercase tracking-wider block">
                 Total Earned
               </span>
               <div className="flex items-baseline gap-1 mt-0.5">
-                <span className="text-lg sm:text-2xl font-black text-emerald-700">
+                <span className="text-lg sm:text-2xl font-black font-mono tabular-nums text-emerald-700">
                   ${stats.grantedRewards.toFixed(2)}
                 </span>
               </div>
@@ -300,12 +300,12 @@ export const MemberHistoryModal: React.FC<MemberHistoryModalProps> = ({
               </span>
             </div>
 
-            <div className="bg-blue-50/70 p-2.5 sm:p-3.5 rounded-xl border border-blue-200">
+            <div className="bg-blue-50/70 p-2.5 sm:p-3.5 rounded-xl border border-blue-200/80">
               <span className="text-[10px] sm:text-[11px] font-bold text-blue-700 uppercase tracking-wider block">
                 Total Paid
               </span>
               <div className="flex items-baseline gap-1 mt-0.5">
-                <span className="text-lg sm:text-2xl font-black text-blue-700">
+                <span className="text-lg sm:text-2xl font-black font-mono tabular-nums text-blue-700">
                   ${stats.totalPaid.toFixed(2)}
                 </span>
               </div>
@@ -314,12 +314,12 @@ export const MemberHistoryModal: React.FC<MemberHistoryModalProps> = ({
               </span>
             </div>
 
-            <div className={`p-2.5 sm:p-3.5 rounded-xl border ${stats.unpaidBalance > 0 ? 'bg-amber-50/70 border-amber-300' : 'bg-slate-50 border-slate-200'}`}>
+            <div className={`p-2.5 sm:p-3.5 rounded-xl border ${stats.unpaidBalance > 0 ? 'bg-amber-50/70 border-amber-300' : 'bg-slate-50/80 border-slate-200/80'}`}>
               <span className={`text-[10px] sm:text-[11px] font-bold uppercase tracking-wider block ${stats.unpaidBalance > 0 ? 'text-amber-800' : 'text-slate-500'}`}>
                 Balance Due
               </span>
               <div className="flex items-baseline gap-1 mt-0.5">
-                <span className={`text-lg sm:text-2xl font-black ${stats.unpaidBalance > 0 ? 'text-amber-800' : 'text-slate-700'}`}>
+                <span className={`text-lg sm:text-2xl font-black font-mono tabular-nums ${stats.unpaidBalance > 0 ? 'text-amber-800' : 'text-slate-700'}`}>
                   ${stats.unpaidBalance.toFixed(2)}
                 </span>
               </div>

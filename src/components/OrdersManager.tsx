@@ -286,10 +286,10 @@ export const OrdersManager: React.FC<OrdersManagerProps> = ({
       
       {/* Top Header: Orders Count + [Search Icon] + [3-Dots Menu] in line */}
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex items-center gap-2.5 min-w-0">
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2 truncate">
             <span>Orders</span>
-            <span className="text-xs font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full shrink-0">
+            <span className="text-xs font-bold font-mono tabular-nums bg-blue-50 text-blue-700 border border-blue-200/80 px-2 py-0.5 rounded-md shrink-0">
               {filteredOrders.length}
             </span>
           </h1>
@@ -438,20 +438,20 @@ export const OrdersManager: React.FC<OrdersManagerProps> = ({
           {/* Key Metric Tiles: Constant across status tabs */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 pt-1">
             <div className="bg-slate-800/60 rounded-xl p-2.5 border border-slate-700/50">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Realized Revenue</span>
-              <span className="text-base sm:text-lg font-black text-blue-300">${summary.totalRev.toFixed(2)}</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Realized Revenue</span>
+              <span className="text-base sm:text-lg font-black font-mono tabular-nums text-blue-300">${summary.totalRev.toFixed(2)}</span>
             </div>
             <div className="bg-slate-800/60 rounded-xl p-2.5 border border-slate-700/50">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Realized Profit</span>
-              <span className="text-base sm:text-lg font-black text-emerald-400">+${summary.totalProfit.toFixed(2)}</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Realized Profit</span>
+              <span className="text-base sm:text-lg font-black font-mono tabular-nums text-emerald-400">+${summary.totalProfit.toFixed(2)}</span>
             </div>
             <div className="bg-slate-800/60 rounded-xl p-2.5 border border-slate-700/50">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Realized Margin</span>
-              <span className="text-base sm:text-lg font-black text-emerald-300">{summary.avgMargin}%</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Realized Margin</span>
+              <span className="text-base sm:text-lg font-black font-mono tabular-nums text-emerald-300">{summary.avgMargin}%</span>
             </div>
             <div className="bg-slate-800/60 rounded-xl p-2.5 border border-slate-700/50">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Delivered Orders</span>
-              <span className="text-base sm:text-lg font-black text-slate-200">
+              <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Delivered Orders</span>
+              <span className="text-base sm:text-lg font-black font-mono tabular-nums text-slate-200">
                 {summary.realizedCount} <span className="text-xs text-slate-400 font-normal">/ {summary.totalCount} total</span>
               </span>
             </div>
@@ -476,11 +476,11 @@ export const OrdersManager: React.FC<OrdersManagerProps> = ({
               className={`px-3 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer shrink-0 ${
                 isSelected
                   ? 'bg-slate-900 text-white shadow-xs'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                  : 'bg-white border border-slate-200/80 text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               <span>{tab.label}</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+              <span className={`text-[10px] font-mono tabular-nums px-1.5 py-0.2 rounded-md font-bold ${
                 isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
               }`}>
                 {tab.count}
@@ -659,7 +659,7 @@ export const OrdersManager: React.FC<OrdersManagerProps> = ({
                         {/* Financials: Net Profit only (Revenue, Cost, and Margin removed per desktop layout) */}
                         {canViewFinancials && (
                           <td className="py-3 px-4 text-right whitespace-nowrap">
-                            <span className="font-black text-emerald-700 text-sm">
+                            <span className="font-black font-mono tabular-nums text-emerald-700 text-sm">
                               +${ord.netProfit.toFixed(2)}
                             </span>
                           </td>
@@ -669,23 +669,23 @@ export const OrdersManager: React.FC<OrdersManagerProps> = ({
                         <td className="py-3 px-4 whitespace-nowrap">
                           {ord.confirmationMemberName ? (
                             <div>
-                              <div className="font-semibold text-slate-800 flex items-center gap-1">
+                              <div className="font-semibold text-slate-800 flex items-center gap-1.5">
                                 <Award className="w-3.5 h-3.5 text-blue-600" />
                                 <span>{ord.confirmationMemberName}</span>
                               </div>
                               <div className="text-[10px] text-slate-500 flex items-center gap-1.5 mt-0.5">
-                                <span className="font-bold text-blue-700">+${(ord.memberReward || 0).toFixed(2)}</span>
+                                <span className="font-bold font-mono tabular-nums text-blue-700">+${(ord.memberReward || 0).toFixed(2)}</span>
                                 {ord.rewardCalculationMode === 'per_item' && ord.quantity > 1 && (
-                                  <span className="text-[9px] font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-1 rounded">
+                                  <span className="text-[9px] font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-1 rounded-md">
                                     Per Item (×{ord.quantity})
                                   </span>
                                 )}
-                                <span className={`px-1.5 py-0.2 rounded-full font-bold uppercase ${
+                                <span className={`px-1.5 py-0.2 rounded-md font-bold uppercase text-[9px] border ${
                                   ord.status === 'cancelled'
-                                    ? 'bg-slate-200 text-slate-600'
+                                    ? 'bg-slate-100 text-slate-600 border-slate-200'
                                     : ord.rewardStatus === 'granted'
-                                    ? 'bg-emerald-100 text-emerald-800'
-                                    : 'bg-amber-100 text-amber-800'
+                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                    : 'bg-amber-50 text-amber-700 border-amber-200'
                                 }`}>
                                   {ord.status === 'cancelled' ? 'Void' : ord.rewardStatus === 'granted' ? 'Paid' : 'Pending'}
                                 </span>

@@ -353,9 +353,13 @@ export const TeamManager: React.FC<TeamManagerProps> = ({
                 <div>
                   {/* Card Header */}
                   <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => onViewHistory(member)}
+                      className="flex items-center gap-3 text-left group/name cursor-pointer"
+                      title="View Member Details & History"
+                    >
                       <div className="relative">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-xs">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-xs group-hover/name:scale-105 transition-transform">
                           {member.name.slice(0, 2).toUpperCase()}
                         </div>
                         <span
@@ -366,14 +370,14 @@ export const TeamManager: React.FC<TeamManagerProps> = ({
                       </div>
 
                       <div>
-                        <h2 className="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
+                        <h2 className="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-1.5 group-hover/name:text-blue-600 transition-colors">
                           <span>{member.name}</span>
                         </h2>
                         <span className="text-[11px] font-semibold text-slate-400 block">
                           {member.status === 'active' ? 'Active' : 'Inactive'}
                         </span>
                       </div>
-                    </div>
+                    </button>
 
                     {/* Actions */}
                     <div className="flex items-center gap-1">
@@ -400,11 +404,12 @@ export const TeamManager: React.FC<TeamManagerProps> = ({
                   <div className="mt-3 flex flex-wrap items-center gap-1.5">
                     <div className="flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-lg text-xs font-bold">
                       <Award className="w-3.5 h-3.5 text-amber-500" />
-                      <span>${member.baseReward.toFixed(2)} {member.rewardCalculationMode === 'per_item' ? '/ item' : '/ order'}</span>
+                      <span>${member.baseReward.toFixed(2)}<span className="hidden sm:inline"> {member.rewardCalculationMode === 'per_item' ? '/ item' : '/ order'}</span></span>
                     </div>
 
+                    {/* Hidden on mobile to avoid clutter; full calculation details are on member details view */}
                     <div
-                      className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold border ${
+                      className={`hidden sm:flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold border ${
                         member.rewardCalculationMode === 'per_item'
                           ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
                           : 'bg-slate-100 text-slate-700 border-slate-200'
@@ -445,9 +450,9 @@ export const TeamManager: React.FC<TeamManagerProps> = ({
                     </div>
                   </div>
 
-                  {/* Contact Info */}
+                  {/* Contact Info: hidden on mobile cards, displayed on member details page */}
                   {(member.phone || member.email) && (
-                    <div className="mt-2.5 space-y-1 text-xs text-slate-600">
+                    <div className="hidden sm:block mt-2.5 space-y-1 text-xs text-slate-600">
                       {member.phone && (
                         <div className="flex items-center gap-2">
                           <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />

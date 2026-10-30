@@ -9,11 +9,14 @@ import {
   CheckCircle2, 
   Phone, 
   Mail, 
-  Calendar, 
   Search,
   Truck,
   Check,
-  CreditCard
+  CreditCard,
+  ArrowLeft,
+  Package,
+  ExternalLink,
+  ChevronRight
 } from 'lucide-react';
 import { ConfirmationMember, Order, TeamPayout } from '../types';
 
@@ -143,19 +146,27 @@ export const MemberHistoryModal: React.FC<MemberHistoryModalProps> = ({
   if (!isOpen || !member) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-white rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
+    <div className="fixed inset-0 z-50 bg-white flex flex-col overflow-hidden sm:bg-slate-900/60 sm:backdrop-blur-xs sm:flex sm:items-center sm:justify-center sm:p-4">
+      <div className="bg-white w-full h-full flex flex-col overflow-hidden sm:h-auto sm:max-h-[92vh] sm:max-w-4xl sm:rounded-2xl sm:shadow-2xl sm:border sm:border-slate-200">
+        
+        {/* Navigation & Title Bar */}
+        <div className="px-4 sm:px-6 py-3.5 border-b border-slate-200 bg-white flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              onClick={onClose}
+              className="p-1.5 -ml-1 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 sm:hidden cursor-pointer"
+              title="Back to team"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-sm sm:text-base shadow-xs shrink-0">
               {member.name.slice(0, 2).toUpperCase()}
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="font-bold text-slate-900 text-base sm:text-lg">{member.name}</h2>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="font-bold text-slate-900 text-base sm:text-lg truncate">{member.name}</h1>
                 <span
-                  className={`px-2 py-0.5 rounded-full text-[11px] font-bold border ${
+                  className={`px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold border ${
                     member.status === 'active'
                       ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                       : 'bg-slate-100 text-slate-600 border-slate-200'
@@ -163,74 +174,124 @@ export const MemberHistoryModal: React.FC<MemberHistoryModalProps> = ({
                 >
                   {member.status === 'active' ? 'Active' : 'Inactive'}
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                  {member.rewardTrigger === 'confirmed' ? 'On Confirmed' : 'On Delivered'}
-                </span>
               </div>
-              <div className="flex items-center gap-4 text-xs text-slate-500 mt-0.5">
-                {member.phone && (
-                  <span className="flex items-center gap-1">
-                    <Phone className="w-3 h-3 text-slate-400" />
-                    {member.phone}
-                  </span>
-                )}
-                {member.email && (
-                  <span className="flex items-center gap-1">
-                    <Mail className="w-3 h-3 text-slate-400" />
-                    {member.email}
-                  </span>
-                )}
-                <span className="flex items-center gap-1 font-semibold text-slate-700">
-                  <Award className="w-3 h-3 text-amber-500" />
-                  Base: ${member.baseReward.toFixed(2)} ({member.rewardCalculationMode === 'per_item' ? 'Per Item' : 'Per Order'})
-                </span>
-              </div>
+              <p className="text-xs text-slate-500 hidden sm:block">Confirmation Team Member Details & History</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {onPayMember && (
               <button
                 onClick={() => onPayMember(member, stats.unpaidBalance)}
-                className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                className="px-3 sm:px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
               >
                 <DollarSign className="w-4 h-4" />
-                <span>Pay Member</span>
+                <span>Pay {stats.unpaidBalance > 0 ? `($${stats.unpaidBalance.toFixed(2)})` : ''}</span>
               </button>
             )}
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 cursor-pointer"
+              className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 hidden sm:block cursor-pointer"
+              title="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Modal Content */}
-        <div className="p-6 overflow-y-auto space-y-5 flex-1">
-          {/* Member KPI Summary Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                Orders
-              </span>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-xl sm:text-2xl font-black text-slate-900">
-                  {stats.totalOrders}
-                </span>
-                <span className="text-xs text-emerald-600 font-bold">
-                  {stats.deliveredOrders} delivered
+        {/* Member Profile Details Strip */}
+        <div className="bg-slate-50 border-b border-slate-200 px-4 sm:px-6 py-3 shrink-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 text-xs">
+            {/* Phone */}
+            <div className="flex items-center gap-2 text-slate-700 min-w-0">
+              <div className="w-6 h-6 rounded-md bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                <Phone className="w-3.5 h-3.5" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">Phone Number</span>
+                {member.phone ? (
+                  <a href={`tel:${member.phone}`} className="font-semibold text-blue-600 hover:underline truncate block">
+                    {member.phone}
+                  </a>
+                ) : (
+                  <span className="text-slate-400 font-medium">Not provided</span>
+                )}
+              </div>
+            </div>
+
+            {/* Email */}
+            <div className="flex items-center gap-2 text-slate-700 min-w-0">
+              <div className="w-6 h-6 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+                <Mail className="w-3.5 h-3.5" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">Email Address</span>
+                {member.email ? (
+                  <a href={`mailto:${member.email}`} className="font-semibold text-blue-600 hover:underline truncate block">
+                    {member.email}
+                  </a>
+                ) : (
+                  <span className="text-slate-400 font-medium">Not provided</span>
+                )}
+              </div>
+            </div>
+
+            {/* Reward Rate & Calculation Mode */}
+            <div className="flex items-center gap-2 text-slate-700 min-w-0">
+              <div className="w-6 h-6 rounded-md bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                <Award className="w-3.5 h-3.5" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">Base Reward & Mode</span>
+                <span className="font-bold text-slate-900 block truncate">
+                  ${member.baseReward.toFixed(2)}{' '}
+                  <span className={member.rewardCalculationMode === 'per_item' ? 'text-indigo-600' : 'text-slate-600'}>
+                    ({member.rewardCalculationMode === 'per_item' ? 'Per Item in Order' : 'Per Order Flat'})
+                  </span>
                 </span>
               </div>
             </div>
 
-            <div className="bg-emerald-50/60 p-3.5 rounded-xl border border-emerald-200">
-              <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block">
+            {/* Trigger Rule */}
+            <div className="flex items-center gap-2 text-slate-700 min-w-0">
+              <div className="w-6 h-6 rounded-md bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                {member.rewardTrigger === 'confirmed' ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Truck className="w-3.5 h-3.5" />}
+              </div>
+              <div className="min-w-0">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">Release Trigger</span>
+                <span className="font-bold text-slate-900 block truncate">
+                  {member.rewardTrigger === 'confirmed' ? 'On Confirmed / Shipped' : 'On Delivered'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Scrollable Body */}
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
+          
+          {/* Financial Stats: Clean flat strip without bulky nested cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+            <div className="bg-slate-50 p-2.5 sm:p-3.5 rounded-xl border border-slate-200">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                Orders Handled
+              </span>
+              <div className="flex items-baseline gap-1.5 mt-0.5">
+                <span className="text-lg sm:text-2xl font-black text-slate-900">
+                  {stats.totalOrders}
+                </span>
+                <span className="text-[11px] sm:text-xs text-emerald-600 font-bold">
+                  {stats.deliveredOrders} del.
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-emerald-50/70 p-2.5 sm:p-3.5 rounded-xl border border-emerald-200">
+              <span className="text-[10px] sm:text-[11px] font-bold text-emerald-700 uppercase tracking-wider block">
                 Total Earned
               </span>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-xl sm:text-2xl font-black text-emerald-700">
+              <div className="flex items-baseline gap-1 mt-0.5">
+                <span className="text-lg sm:text-2xl font-black text-emerald-700">
                   ${stats.grantedRewards.toFixed(2)}
                 </span>
               </div>
@@ -239,12 +300,12 @@ export const MemberHistoryModal: React.FC<MemberHistoryModalProps> = ({
               </span>
             </div>
 
-            <div className="bg-blue-50/60 p-3.5 rounded-xl border border-blue-200">
-              <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wider block">
+            <div className="bg-blue-50/70 p-2.5 sm:p-3.5 rounded-xl border border-blue-200">
+              <span className="text-[10px] sm:text-[11px] font-bold text-blue-700 uppercase tracking-wider block">
                 Total Paid
               </span>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-xl sm:text-2xl font-black text-blue-700">
+              <div className="flex items-baseline gap-1 mt-0.5">
+                <span className="text-lg sm:text-2xl font-black text-blue-700">
                   ${stats.totalPaid.toFixed(2)}
                 </span>
               </div>
@@ -253,17 +314,17 @@ export const MemberHistoryModal: React.FC<MemberHistoryModalProps> = ({
               </span>
             </div>
 
-            <div className={`p-3.5 rounded-xl border ${stats.unpaidBalance > 0 ? 'bg-amber-50/70 border-amber-300' : 'bg-slate-50 border-slate-200'}`}>
-              <span className={`text-[11px] font-bold uppercase tracking-wider block ${stats.unpaidBalance > 0 ? 'text-amber-800' : 'text-slate-500'}`}>
+            <div className={`p-2.5 sm:p-3.5 rounded-xl border ${stats.unpaidBalance > 0 ? 'bg-amber-50/70 border-amber-300' : 'bg-slate-50 border-slate-200'}`}>
+              <span className={`text-[10px] sm:text-[11px] font-bold uppercase tracking-wider block ${stats.unpaidBalance > 0 ? 'text-amber-800' : 'text-slate-500'}`}>
                 Balance Due
               </span>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className={`text-xl sm:text-2xl font-black ${stats.unpaidBalance > 0 ? 'text-amber-800' : 'text-slate-700'}`}>
+              <div className="flex items-baseline gap-1 mt-0.5">
+                <span className={`text-lg sm:text-2xl font-black ${stats.unpaidBalance > 0 ? 'text-amber-800' : 'text-slate-700'}`}>
                   ${stats.unpaidBalance.toFixed(2)}
                 </span>
               </div>
               <span className={`text-[10px] block mt-0.5 font-medium ${stats.unpaidBalance > 0 ? 'text-amber-700' : 'text-slate-400'}`}>
-                {stats.unpaidBalance > 0 ? 'Unsettled amount' : 'Fully settled'}
+                {stats.unpaidBalance > 0 ? 'Unsettled balance' : 'Fully settled'}
               </span>
             </div>
           </div>
@@ -297,19 +358,19 @@ export const MemberHistoryModal: React.FC<MemberHistoryModalProps> = ({
           {activeTab === 'orders' ? (
             <>
               {/* Search & Filter Toolbar */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="relative flex-1 max-w-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div className="relative flex-1">
                   <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search by buyer or item..."
-                    className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-hidden"
+                    placeholder="Search by buyer, phone, product, or order ID..."
+                    className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-hidden focus:border-blue-500 focus:bg-white transition-colors"
                   />
                 </div>
 
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+                <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
                   {[
                     { id: 'all', label: `All (${memberOrders.length})` },
                     { id: 'delivered', label: `Delivered (${stats.deliveredOrders})` },
@@ -322,7 +383,7 @@ export const MemberHistoryModal: React.FC<MemberHistoryModalProps> = ({
                       onClick={() => setStatusFilter(tab.id)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-colors ${
                         statusFilter === tab.id
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-blue-600 text-white shadow-2xs'
                           : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                       }`}
                     >
@@ -332,154 +393,268 @@ export const MemberHistoryModal: React.FC<MemberHistoryModalProps> = ({
                 </div>
               </div>
 
-              {/* Orders History Table */}
               {filteredOrders.length === 0 ? (
-                <div className="text-center py-12 border border-dashed border-slate-200 rounded-2xl">
-                  <History className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                  <p className="text-sm font-semibold text-slate-700">No orders found</p>
+                <div className="text-center py-10 border border-dashed border-slate-200 rounded-xl bg-slate-50/50">
+                  <History className="w-9 h-9 text-slate-300 mx-auto mb-1.5" />
+                  <p className="text-sm font-semibold text-slate-700">No matching orders found</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Try searching with a different keyword or filter</p>
                 </div>
               ) : (
-                <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase text-[11px]">
-                        <tr>
-                          <th className="py-3 px-4">Date & Order</th>
-                          <th className="py-3 px-4">Product & Buyer</th>
-                          <th className="py-3 px-4 text-right">Base vs Sale</th>
-                          <th className="py-3 px-4 text-right">Reward</th>
-                          <th className="py-3 px-4 text-center">Status</th>
-                          <th className="py-3 px-4 text-center">Reward Status</th>
-                          <th className="py-3 px-4 text-right">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100">
-                        {filteredOrders.map((ord) => {
-                          const basePr = typeof ord.basePrice === 'number' && ord.basePrice > 0 ? ord.basePrice : ord.salePrice;
-                          const hasUpsell = ord.salePrice > basePr;
-                          const upsellDiff = Math.max(0, ord.salePrice - basePr) * ord.quantity;
-                          const baseRewardPart = (ord.memberReward || 0) - upsellDiff;
+                <>
+                  {/* MOBILE VIEW: Clean, modern divided list (no cards inside cards, no cramped sideways tables) */}
+                  <div className="block md:hidden divide-y divide-slate-100 border border-slate-200 rounded-xl bg-white overflow-hidden shadow-2xs">
+                    {filteredOrders.map((ord) => {
+                      const basePr = typeof ord.basePrice === 'number' && ord.basePrice > 0 ? ord.basePrice : ord.salePrice;
+                      const hasUpsell = ord.salePrice > basePr;
+                      const upsellDiff = Math.max(0, ord.salePrice - basePr) * ord.quantity;
+                      const isGranted =
+                        ord.rewardStatus === 'granted' ||
+                        (member.rewardTrigger === 'confirmed'
+                          ? ['confirmed', 'delivered', 'completed', 'shipped'].includes(ord.status)
+                          : ['delivered', 'completed'].includes(ord.status));
+                      const isCancelled = ord.status === 'cancelled';
 
-                          const isGranted =
-                            ord.rewardStatus === 'granted' ||
-                            (member.rewardTrigger === 'confirmed'
-                              ? ['confirmed', 'delivered', 'completed', 'shipped'].includes(ord.status)
-                              : ['delivered', 'completed'].includes(ord.status));
+                      return (
+                        <div key={ord.id} className="p-3.5 space-y-2 hover:bg-slate-50/60 transition-colors">
+                          {/* Row 1: Date & Status */}
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                              <span className="font-semibold text-slate-900">{ord.date}</span>
+                              <span className="text-slate-300">·</span>
+                              <span className="font-mono text-[11px] text-slate-400">#{ord.id.slice(-6)}</span>
+                            </div>
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-bold capitalize border ${
+                                ord.status === 'delivered' || ord.status === 'completed'
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                  : ord.status === 'confirmed' || ord.status === 'shipped'
+                                  ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                  : ord.status === 'cancelled'
+                                  ? 'bg-rose-50 text-rose-700 border-rose-200'
+                                  : 'bg-blue-50 text-blue-700 border-blue-200'
+                              }`}
+                            >
+                              {ord.status}
+                            </span>
+                          </div>
 
-                          const isCancelled = ord.status === 'cancelled';
+                          {/* Row 2: Product & Buyer */}
+                          <div>
+                            <div className="flex items-start justify-between gap-2">
+                              <h3 className="font-bold text-slate-900 text-sm leading-snug">
+                                {ord.itemTitle}
+                              </h3>
+                              <span className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md text-[11px] font-bold shrink-0">
+                                Qty: {ord.quantity}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-slate-600 mt-1">
+                              <span className="font-medium text-slate-800">{ord.buyerName}</span>
+                              {ord.customerPhone && (
+                                <>
+                                  <span className="text-slate-300">·</span>
+                                  <a href={`tel:${ord.customerPhone}`} className="text-blue-600 hover:underline">
+                                    {ord.customerPhone}
+                                  </a>
+                                </>
+                              )}
+                            </div>
+                          </div>
 
-                          return (
-                            <tr key={ord.id} className="hover:bg-slate-50 transition-colors">
-                              <td className="py-3 px-4">
-                                <span className="font-semibold text-slate-900 block">{ord.date}</span>
-                                <span className="text-[10px] text-slate-400 font-mono">#{ord.id.slice(-6)}</span>
-                              </td>
-
-                              <td className="py-3 px-4">
-                                <span className="font-bold text-slate-900 block">{ord.itemTitle}</span>
-                                <div className="flex items-center gap-1.5 text-slate-500 text-[11px] mt-0.5">
-                                  <span>{ord.buyerName}</span>
-                                  {ord.customerPhone && (
-                                    <span className="text-slate-400">· {ord.customerPhone}</span>
-                                  )}
-                                  <span className="font-semibold text-slate-600">· Qty: {ord.quantity}</span>
-                                </div>
-                              </td>
-
-                              <td className="py-3 px-4 text-right">
-                                <div className="space-y-0.5">
-                                  <span className="font-bold text-slate-900 block">
-                                    ${ord.salePrice.toFixed(2)}
-                                  </span>
-                                  {hasUpsell ? (
-                                    <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
-                                      +${(ord.salePrice - basePr).toFixed(2)} upsell
-                                    </span>
-                                  ) : (
-                                    <span className="text-[10px] text-slate-400">
-                                      Base: ${basePr.toFixed(2)}
-                                    </span>
-                                  )}
-                                </div>
-                              </td>
-
-                              <td className="py-3 px-4 text-right">
-                                <div className="space-y-0.5">
-                                  <span className={`font-black text-sm block ${isCancelled ? 'text-slate-400 line-through' : 'text-blue-700'}`}>
-                                    ${(ord.memberReward || 0).toFixed(2)}
-                                  </span>
-                                  {!isCancelled && (
-                                    <span className="text-[10px] text-slate-500 block">
-                                      {ord.rewardCalculationMode === 'per_item' ? (
-                                        <span className="text-indigo-600 font-bold">Per Item (×{ord.quantity})</span>
-                                      ) : (
-                                        <span>Per Order (flat)</span>
-                                      )}
-                                    </span>
-                                  )}
-                                </div>
-                              </td>
-
-                              <td className="py-3 px-4 text-center">
-                                <span
-                                  className={`px-2 py-0.5 rounded-full text-[11px] font-bold capitalize border ${
-                                    ord.status === 'delivered' || ord.status === 'completed'
-                                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                      : ord.status === 'confirmed' || ord.status === 'shipped'
-                                      ? 'bg-amber-50 text-amber-700 border-amber-200'
-                                      : ord.status === 'cancelled'
-                                      ? 'bg-rose-50 text-rose-700 border-rose-200'
-                                      : 'bg-blue-50 text-blue-700 border-blue-200'
-                                  }`}
-                                >
-                                  {ord.status}
-                                </span>
-                              </td>
-
-                              <td className="py-3 px-4 text-center">
-                                {isCancelled ? (
-                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500">
-                                    Cancelled ($0)
-                                  </span>
-                                ) : isGranted ? (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                                    <Check className="w-3 h-3 text-emerald-600" />
-                                    <span>Granted</span>
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
-                                    <Clock className="w-3 h-3 text-amber-600" />
-                                    <span>Pending</span>
+                          {/* Row 3: Financial & Reward Summary */}
+                          <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
+                            <div>
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-bold text-slate-900">${ord.salePrice.toFixed(2)}</span>
+                                {hasUpsell && (
+                                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                                    +${upsellDiff.toFixed(2)} upsell
                                   </span>
                                 )}
-                              </td>
+                              </div>
+                              <div className="text-[10px] text-slate-500 mt-0.5">
+                                {ord.rewardCalculationMode === 'per_item' ? (
+                                  <span className="text-indigo-600 font-semibold">Per Item: ${member.baseReward.toFixed(2)} × {ord.quantity}</span>
+                                ) : (
+                                  <span>Per Order: ${member.baseReward.toFixed(2)}</span>
+                                )}
+                              </div>
+                            </div>
 
-                              <td className="py-3 px-4 text-right">
-                                <button
-                                  onClick={() => {
-                                    onClose();
-                                    onOpenEditOrder(ord);
-                                  }}
-                                  className="text-xs font-semibold text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded cursor-pointer"
-                                >
-                                  Edit Order
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                            <div className="flex items-center gap-2">
+                              <div className="text-right">
+                                <span className={`font-black text-sm block ${isCancelled ? 'text-slate-400 line-through' : 'text-blue-700'}`}>
+                                  ${(ord.memberReward || 0).toFixed(2)}
+                                </span>
+                                {isCancelled ? (
+                                  <span className="text-[10px] font-bold text-rose-600">Cancelled</span>
+                                ) : isGranted ? (
+                                  <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-700">
+                                    <Check className="w-3 h-3 text-emerald-600" /> Granted
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-amber-700">
+                                    <Clock className="w-3 h-3 text-amber-600" /> Pending
+                                  </span>
+                                )}
+                              </div>
+
+                              <button
+                                onClick={() => {
+                                  onClose();
+                                  onOpenEditOrder(ord);
+                                }}
+                                className="p-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-semibold cursor-pointer shrink-0"
+                                title="Edit Order"
+                              >
+                                Edit
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                </div>
+
+                  {/* DESKTOP VIEW: Full Data Table */}
+                  <div className="hidden md:block border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase text-[11px]">
+                          <tr>
+                            <th className="py-3 px-4">Date & Order</th>
+                            <th className="py-3 px-4">Product & Buyer</th>
+                            <th className="py-3 px-4 text-right">Base vs Sale</th>
+                            <th className="py-3 px-4 text-right">Member Reward</th>
+                            <th className="py-3 px-4 text-center">Order Status</th>
+                            <th className="py-3 px-4 text-center">Reward Status</th>
+                            <th className="py-3 px-4 text-right">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                          {filteredOrders.map((ord) => {
+                            const basePr = typeof ord.basePrice === 'number' && ord.basePrice > 0 ? ord.basePrice : ord.salePrice;
+                            const hasUpsell = ord.salePrice > basePr;
+                            const isGranted =
+                              ord.rewardStatus === 'granted' ||
+                              (member.rewardTrigger === 'confirmed'
+                                ? ['confirmed', 'delivered', 'completed', 'shipped'].includes(ord.status)
+                                : ['delivered', 'completed'].includes(ord.status));
+                            const isCancelled = ord.status === 'cancelled';
+
+                            return (
+                              <tr key={ord.id} className="hover:bg-slate-50 transition-colors">
+                                <td className="py-3 px-4">
+                                  <span className="font-semibold text-slate-900 block">{ord.date}</span>
+                                  <span className="text-[10px] text-slate-400 font-mono">#{ord.id.slice(-6)}</span>
+                                </td>
+
+                                <td className="py-3 px-4">
+                                  <span className="font-bold text-slate-900 block">{ord.itemTitle}</span>
+                                  <div className="flex items-center gap-1.5 text-slate-500 text-[11px] mt-0.5">
+                                    <span>{ord.buyerName}</span>
+                                    {ord.customerPhone && (
+                                      <span className="text-slate-400">· {ord.customerPhone}</span>
+                                    )}
+                                    <span className="font-semibold text-slate-600">· Qty: {ord.quantity}</span>
+                                  </div>
+                                </td>
+
+                                <td className="py-3 px-4 text-right">
+                                  <div className="space-y-0.5">
+                                    <span className="font-bold text-slate-900 block">
+                                      ${ord.salePrice.toFixed(2)}
+                                    </span>
+                                    {hasUpsell ? (
+                                      <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                                        +${(ord.salePrice - basePr).toFixed(2)} upsell
+                                      </span>
+                                    ) : (
+                                      <span className="text-[10px] text-slate-400">
+                                        Base: ${basePr.toFixed(2)}
+                                      </span>
+                                    )}
+                                  </div>
+                                </td>
+
+                                <td className="py-3 px-4 text-right">
+                                  <div className="space-y-0.5">
+                                    <span className={`font-black text-sm block ${isCancelled ? 'text-slate-400 line-through' : 'text-blue-700'}`}>
+                                      ${(ord.memberReward || 0).toFixed(2)}
+                                    </span>
+                                    {!isCancelled && (
+                                      <span className="text-[10px] text-slate-500 block">
+                                        {ord.rewardCalculationMode === 'per_item' ? (
+                                          <span className="text-indigo-600 font-bold">Per Item (×{ord.quantity})</span>
+                                        ) : (
+                                          <span>Per Order (flat)</span>
+                                        )}
+                                      </span>
+                                    )}
+                                  </div>
+                                </td>
+
+                                <td className="py-3 px-4 text-center">
+                                  <span
+                                    className={`px-2 py-0.5 rounded-full text-[11px] font-bold capitalize border ${
+                                      ord.status === 'delivered' || ord.status === 'completed'
+                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                        : ord.status === 'confirmed' || ord.status === 'shipped'
+                                        ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                        : ord.status === 'cancelled'
+                                        ? 'bg-rose-50 text-rose-700 border-rose-200'
+                                        : 'bg-blue-50 text-blue-700 border-blue-200'
+                                    }`}
+                                  >
+                                    {ord.status}
+                                  </span>
+                                </td>
+
+                                <td className="py-3 px-4 text-center">
+                                  {isCancelled ? (
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500">
+                                      Cancelled ($0)
+                                    </span>
+                                  ) : isGranted ? (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                      <Check className="w-3 h-3 text-emerald-600" />
+                                      <span>Granted</span>
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                                      <Clock className="w-3 h-3 text-amber-600" />
+                                      <span>Pending</span>
+                                    </span>
+                                  )}
+                                </td>
+
+                                <td className="py-3 px-4 text-right">
+                                  <button
+                                    onClick={() => {
+                                      onClose();
+                                      onOpenEditOrder(ord);
+                                    }}
+                                    className="text-xs font-semibold text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded cursor-pointer"
+                                  >
+                                    Edit Order
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </>
               )}
             </>
           ) : (
             /* Payouts Tab */
             <div className="space-y-3">
               {memberPayouts.length === 0 ? (
-                <div className="text-center py-12 border border-dashed border-slate-200 rounded-2xl">
-                  <CreditCard className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+                <div className="text-center py-10 border border-dashed border-slate-200 rounded-xl bg-slate-50/50">
+                  <CreditCard className="w-9 h-9 text-slate-300 mx-auto mb-1.5" />
                   <p className="text-sm font-semibold text-slate-700">No payouts recorded yet</p>
                   {onPayMember && (
                     <button
@@ -491,51 +666,74 @@ export const MemberHistoryModal: React.FC<MemberHistoryModalProps> = ({
                   )}
                 </div>
               ) : (
-                <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase text-[11px]">
-                      <tr>
-                        <th className="py-3 px-4">Date</th>
-                        <th className="py-3 px-4 text-right">Amount</th>
-                        <th className="py-3 px-4">Method</th>
-                        <th className="py-3 px-4">Notes / Reference</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {memberPayouts.map((pay) => (
-                        <tr key={pay.id} className="hover:bg-slate-50 transition-colors">
-                          <td className="py-3 px-4 font-semibold text-slate-800">
-                            {pay.date}
-                          </td>
-                          <td className="py-3 px-4 text-right font-black text-emerald-700 text-sm">
-                            ${pay.amount.toFixed(2)}
-                          </td>
-                          <td className="py-3 px-4">
-                            <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-medium text-xs">
-                              {pay.paymentMethod}
-                            </span>
-                          </td>
-                          <td className="py-3 px-4 text-slate-500">
-                            {pay.notes || '—'}
-                          </td>
+                <>
+                  {/* Mobile Payouts List */}
+                  <div className="block md:hidden divide-y divide-slate-100 border border-slate-200 rounded-xl bg-white overflow-hidden shadow-2xs">
+                    {memberPayouts.map((pay) => (
+                      <div key={pay.id} className="p-3.5 flex items-center justify-between gap-3">
+                        <div>
+                          <span className="text-xs font-semibold text-slate-900 block">{pay.date}</span>
+                          <span className="text-[11px] text-slate-500 block mt-0.5">
+                            Method: <span className="font-semibold text-slate-700">{pay.paymentMethod}</span>
+                          </span>
+                          {pay.notes && (
+                            <span className="text-[10px] text-slate-400 block mt-0.5">{pay.notes}</span>
+                          )}
+                        </div>
+                        <span className="font-black text-emerald-700 text-base">
+                          ${pay.amount.toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Desktop Payouts Table */}
+                  <div className="hidden md:block border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase text-[11px]">
+                        <tr>
+                          <th className="py-3 px-4">Date</th>
+                          <th className="py-3 px-4 text-right">Amount</th>
+                          <th className="py-3 px-4">Method</th>
+                          <th className="py-3 px-4">Notes / Reference</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {memberPayouts.map((pay) => (
+                          <tr key={pay.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="py-3 px-4 font-semibold text-slate-800">
+                              {pay.date}
+                            </td>
+                            <td className="py-3 px-4 text-right font-black text-emerald-700 text-sm">
+                              ${pay.amount.toFixed(2)}
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-medium text-xs">
+                                {pay.paymentMethod}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-slate-500">
+                              {pay.notes || '—'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
               )}
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between shrink-0">
           <span className="text-xs text-slate-500">
-            {activeTab === 'orders' ? `${filteredOrders.length} orders` : `${memberPayouts.length} payouts`}
+            {activeTab === 'orders' ? `${filteredOrders.length} orders shown` : `${memberPayouts.length} payouts shown`}
           </span>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold rounded-lg cursor-pointer"
+            className="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold rounded-lg cursor-pointer transition-colors"
           >
             Close
           </button>

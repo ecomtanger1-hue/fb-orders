@@ -13,9 +13,7 @@ import {
   TrendingUp, 
   Clock, 
   CheckCircle2, 
-  Sparkles,
-  RefreshCw,
-  Layers
+  Sparkles
 } from 'lucide-react';
 import { Order, InventoryItem, OrderStatus, ConfirmationMember, RewardCalculationMode, calculateMemberReward } from '../types';
 import { saveOrder, deductInventoryStockFifo } from '../services/db';
@@ -60,11 +58,8 @@ export const SaleModal: React.FC<SaleModalProps> = ({
   const [deliveredDate, setDeliveredDate] = useState<string>('');
   const [notes, setNotes] = useState('');
 
-  // Confirmation Team & Reward State
+  // Confirmation Team Member Selection (only choose who confirmed the order; all settings are configured in Teams tab)
   const [confirmationMemberId, setConfirmationMemberId] = useState<string>('');
-  const [memberReward, setMemberReward] = useState<number>(0);
-  const [rewardCalculationMode, setRewardCalculationMode] = useState<RewardCalculationMode>('per_order');
-  const [isCustomReward, setIsCustomReward] = useState<boolean>(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -99,9 +94,6 @@ export const SaleModal: React.FC<SaleModalProps> = ({
       setNotes(editingOrder.notes || '');
 
       setConfirmationMemberId(editingOrder.confirmationMemberId || '');
-      setMemberReward(editingOrder.memberReward || 0);
-      setRewardCalculationMode(editingOrder.rewardCalculationMode || 'per_order');
-      setIsCustomReward(true);
     } else if (initialItem) {
       setSelectedItemId(initialItem.id);
       setIsCustomItem(false);
@@ -118,9 +110,6 @@ export const SaleModal: React.FC<SaleModalProps> = ({
       setStatus('new');
       setNotes('');
       setConfirmationMemberId('');
-      setMemberReward(0);
-      setRewardCalculationMode('per_order');
-      setIsCustomReward(false);
     } else {
       if (inventory.length > 0) {
         const first = inventory[0];
@@ -147,9 +136,6 @@ export const SaleModal: React.FC<SaleModalProps> = ({
       setStatus('new');
       setNotes('');
       setConfirmationMemberId('');
-      setMemberReward(0);
-      setRewardCalculationMode('per_order');
-      setIsCustomReward(false);
     }
   }, [editingOrder, initialItem, isOpen, inventory]);
 
@@ -174,50 +160,19 @@ export const SaleModal: React.FC<SaleModalProps> = ({
     }
   };
 
-  // Calculation of member reward and bonus based on calculation setting (per_order vs per_item)
-  const rewardBreakdown = useMemo(() => {
-    if (!selectedMember) {
-      return { baseTotal: 0, upsellPerUnit: 0, bonusTotal: 0, totalReward: 0 };
-    }
-    return calculateMemberReward(
+  // Calculation of member reward directly from the member's profile settings (configured in Teams tab)
+  const calculatedReward = useMemo(() => {
+    if (!selectedMember) return 0;
+    const mode = selectedMember.rewardCalculationMode || 'per_order';
+    const breakdown = calculateMemberReward(
       selectedMember.baseReward || 0,
       basePrice || salePrice,
       salePrice,
       quantity,
-      rewardCalculationMode
+      mode
     );
-  }, [selectedMember, basePrice, salePrice, quantity, rewardCalculationMode]);
-
-  const calculatedReward = rewardBreakdown.totalReward;
-
-  // Auto update reward if not manually overridden
-  useEffect(() => {
-    if (!isCustomReward && confirmationMemberId && selectedMember) {
-      setMemberReward(calculatedReward);
-    }
-  }, [isCustomReward, confirmationMemberId, selectedMember, calculatedReward]);
-
-  const handleMemberChange = (memberId: string) => {
-    setConfirmationMemberId(memberId);
-    setIsCustomReward(false);
-    if (!memberId) {
-      setMemberReward(0);
-    } else {
-      const mem = teamMembers.find((m) => m.id === memberId);
-      if (mem) {
-        const mode = mem.rewardCalculationMode || 'per_order';
-        setRewardCalculationMode(mode);
-        const res = calculateMemberReward(
-          mem.baseReward || 0,
-          basePrice || salePrice,
-          salePrice,
-          quantity,
-          mode
-        );
-        setMemberReward(res.totalReward);
-      }
-    }
-  };
+    return breakdown.totalReward;
+  }, [selectedMember, basePrice, salePrice, quantity]);
 
   // Real-time financial figures (accounting for member reward deduction from net profit)
   const totalRevenue = useMemo(() => {
@@ -229,8 +184,8 @@ export const SaleModal: React.FC<SaleModalProps> = ({
   }, [unitCost, quantity, platformFee]);
 
   const activeRewardDeduction = useMemo(() => {
-    return confirmationMemberId ? Number(memberReward) || 0 : 0;
-  }, [confirmationMemberId, memberReward]);
+    return confirmationMemberId && selectedMember ? calculatedReward : 0;
+  }, [confirmationMemberId, selectedMember, calculatedReward]);
 
   const netProfit = useMemo(() => {
     return Number((totalRevenue - totalCost - activeRewardDeduction).toFixed(2));
@@ -308,10 +263,10 @@ export const SaleModal: React.FC<SaleModalProps> = ({
       confirmationMemberId: confirmationMemberId || undefined,
       confirmationMemberName: selectedMember ? selectedMember.name : undefined,
       basePrice: Number(basePrice) || salePrice,
-      memberReward: confirmationMemberId ? Number(activeRewardDeduction) : 0,
+      memberReward: confirmationMemberId && selectedMember ? calculatedReward : 0,
       rewardTrigger: selectedMember ? selectedMember.rewardTrigger : undefined,
       rewardStatus,
-      rewardCalculationMode: confirmationMemberId ? rewardCalculationMode : undefined,
+      rewardCalculationMode: selectedMember ? (selectedMember.rewardCalculationMode || 'per_order') : undefined,
     };
 
     try {
@@ -494,159 +449,43 @@ export const SaleModal: React.FC<SaleModalProps> = ({
             </div>
           </div>
 
-          {/* ==================== CONFIRMATION TEAM & REWARD FIELD ==================== */}
-          <div className="bg-gradient-to-br from-blue-50/70 via-indigo-50/40 to-slate-50 p-3.5 rounded-xl border border-blue-200/80 space-y-3">
+          {/* ==================== CONFIRMATION TEAM MEMBER ==================== */}
+          <div className="bg-slate-50 p-3 sm:p-3.5 rounded-xl border border-slate-200 space-y-2">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-bold text-slate-900 flex items-center gap-1.5">
+              <label className="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
                 <Award className="w-4 h-4 text-blue-600" />
                 <span>Confirmed By (Confirmation Team Member)</span>
               </label>
-              <span className="text-[11px] text-blue-700 font-semibold">Reward Tracking</span>
+              {selectedMember && (
+                <span className="text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                  Reward: ${calculatedReward.toFixed(2)}
+                </span>
+              )}
             </div>
 
-            {/* Member Dropdown */}
+            {/* Member Dropdown - Simply choose who confirmed the order */}
             <div>
               <select
                 value={confirmationMemberId}
-                onChange={(e) => handleMemberChange(e.target.value)}
+                onChange={(e) => setConfirmationMemberId(e.target.value)}
                 className="w-full text-xs sm:text-sm p-2.5 bg-white border border-slate-200 rounded-xl font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20"
               >
                 <option value="">-- None / Direct Marketplace Sale (No Agent) --</option>
                 {teamMembers.map((member) => (
                   <option key={member.id} value={member.id}>
-                    {member.name} (Base Reward: ${member.baseReward.toFixed(2)} · On {member.rewardTrigger === 'confirmed' ? 'Confirmed' : 'Delivered'})
+                    {member.name}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* When a member is assigned: Display Reward & Upsell Calculation */}
             {selectedMember && (
-              <div className="space-y-2.5 pt-1 animate-in fade-in">
-                {/* Reward & Bonus Calculation Mode Setting */}
-                <div className="p-2.5 bg-white rounded-xl border border-slate-200 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
-                      <Layers className="w-3.5 h-3.5 text-blue-600" />
-                      <span>Reward &amp; Bonus Setting:</span>
-                    </span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      quantity > 1 ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600'
-                    }`}>
-                      {quantity > 1 ? `Multi-item order (${quantity} items)` : 'Single item'}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setRewardCalculationMode('per_order');
-                        setIsCustomReward(false);
-                      }}
-                      className={`py-2 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border ${
-                        rewardCalculationMode === 'per_order'
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                          : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                      }`}
-                    >
-                      <ShoppingBag className="w-3.5 h-3.5" />
-                      <span>Per Order (Flat)</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setRewardCalculationMode('per_item');
-                        setIsCustomReward(false);
-                      }}
-                      className={`py-2 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border ${
-                        rewardCalculationMode === 'per_item'
-                          ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
-                          : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                      }`}
-                    >
-                      <Package className="w-3.5 h-3.5" />
-                      <span>Per Items ({quantity}×)</span>
-                    </button>
-                  </div>
-
-                  {/* Calculation Breakdown Details */}
-                  <div className="text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-lg space-y-1.5 border border-slate-100">
-                    <div className="flex justify-between items-center">
-                      <span className="text-slate-500">
-                        Base reward {rewardCalculationMode === 'per_item' ? `($${selectedMember.baseReward.toFixed(2)} × ${quantity} items)` : '(flat per order)'}:
-                      </span>
-                      <span className="font-bold text-slate-800">${rewardBreakdown.baseTotal.toFixed(2)}</span>
-                    </div>
-
-                    {rewardBreakdown.bonusTotal > 0 ? (
-                      <div className="flex justify-between items-center text-emerald-700">
-                        <span>
-                          Upsell bonus {rewardCalculationMode === 'per_item' ? `(+$${rewardBreakdown.upsellPerUnit.toFixed(2)} × ${quantity} items)` : `(+$${rewardBreakdown.upsellPerUnit.toFixed(2)} flat)`}:
-                        </span>
-                        <span className="font-bold">+${rewardBreakdown.bonusTotal.toFixed(2)}</span>
-                      </div>
-                    ) : salePrice < basePrice ? (
-                      <div className="text-[10px] text-amber-700">
-                        Sold below catalog price ($${basePrice.toFixed(2)}). Standard base reward applies without bonus.
-                      </div>
-                    ) : (
-                      <div className="text-[10px] text-slate-400">
-                        Sold at catalog base price ($${basePrice.toFixed(2)}). No upsell bonus.
-                      </div>
-                    )}
-
-                    <div className="flex justify-between items-center pt-1.5 border-t border-slate-200 font-bold text-xs">
-                      <span className="text-slate-700">Calculated Reward &amp; Bonus:</span>
-                      <span className="text-blue-700 font-black text-sm">${rewardBreakdown.totalReward.toFixed(2)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Member Reward Amount Input */}
-                <div className="flex items-center justify-between gap-3 bg-white p-2.5 rounded-xl border border-slate-200">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-800">
-                      Final Member Reward Amount ($)
-                    </label>
-                    <span className="text-[10px] text-slate-500 block">
-                      Deducted from order net profit · {selectedMember.rewardTrigger === 'confirmed' ? '⚡ Granted on Confirmed' : '📦 Granted on Delivered'}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <div className="relative w-28">
-                      <span className="absolute left-2.5 top-2 text-xs font-bold text-slate-400">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={memberReward}
-                        onChange={(e) => {
-                          setMemberReward(parseFloat(e.target.value) || 0);
-                          setIsCustomReward(true);
-                        }}
-                        className="w-full pl-6 pr-2 py-1.5 text-xs sm:text-sm font-black text-blue-700 bg-slate-50 border border-slate-200 rounded-lg focus:outline-hidden"
-                      />
-                    </div>
-
-                    {isCustomReward && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsCustomReward(false);
-                          setMemberReward(calculatedReward);
-                        }}
-                        title="Reset to calculated formula"
-                        className="p-1.5 text-xs text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded cursor-pointer"
-                      >
-                        <RefreshCw className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
+              <p className="text-[11px] text-slate-500 flex items-center gap-1.5">
+                <span>Calculated using team settings:</span>
+                <span className="font-semibold text-slate-700">
+                  ${selectedMember.baseReward.toFixed(2)} ({selectedMember.rewardCalculationMode === 'per_item' ? 'Per Item in Order' : 'Per Order Flat'}) · On {selectedMember.rewardTrigger === 'confirmed' ? 'Confirmed' : 'Delivered'}
+                </span>
+              </p>
             )}
           </div>
 
